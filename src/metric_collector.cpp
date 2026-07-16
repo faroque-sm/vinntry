@@ -29,7 +29,7 @@ MetricCollector::MetricCollector(std::shared_ptr<prometheus::Registry> registry)
 MetricCollector::~MetricCollector() {
     if (nvml_initialized_) {
         nvmlShutdown();
-        std::cout << "[vinntry] NVML subsystems shut down cleanly." << std::endl    
+        std::cout << "[vinntry] NVML subsystems shut down cleanly." << std::endl;  
     }
 }
 
