@@ -25,7 +25,7 @@ int main() {
 
     try {
         // Stand up the HTTP Scrape endpoint server binding to port 8000
-        prometheus::Exposer exposer{"0.0.0.0:8000"};
+        prometheus::Exposer exposer{"0.0.0.0:9101"};
 
         // Instantiate the central metrics registry allocation block
         auto registry = std::make_shared<prometheus::Registry>();
