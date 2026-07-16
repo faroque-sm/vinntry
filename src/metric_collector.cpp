@@ -43,20 +43,20 @@ void MetricCollector::update_metrics() {
 
         nvmlUtilization_t utilization;
         result = nvmlDeviceGetUtilizationRates(handle, &utilization);
-        if (result != NVML_SUCCESS) {
+        if (result == NVML_SUCCESS) {
             metric_map_[i].gpu_util->Set(static_cast<double>(utilization.gpu));
             metric_map_[i].mem_util->Set(static_cast<double>(utilization.memory));
         }
 
         nvmlMemory_t memory_info;
         result = nvmlDeviceGetMemoryInfo(handle, &memory_info);
-        if (result != NVML_SUCCESS) {
+        if (result == NVML_SUCCESS) {
             metric_map_[i].fb_used->Set(static_cast<double>(memory_info.used));
         }
 
         unsigned int temp = 0;
         result = nvmlDeviceGetTemperature(handle, NVML_TEMPERATURE_GPU, &temp);
-        if (result != NVML_SUCCESS) {
+        if (result == NVML_SUCCESS) {
             metric_map_[i].gpu_temp->Set(static_cast<double>(temp));
         }
     }
