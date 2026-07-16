@@ -24,23 +24,12 @@ find_library(NVML_LIBRARY
     REQUIRED
 )
 
-find_path(NVML_INCLUDE_DIR
-    NAMES nvml.h
-    PATHS
-        /usr/include
-        /usr/local/cuda/include
-        /usr/include/nvidia/current  # Common path on enterprise Linux nodes
-    REQUIRED
-)
-
 # Handle Header Include Paths
 include_directories(
     include
-    ${NVML_INCLUDE_DIR} 
-    ${CONDA_PREFIX}/include
+    $ENV{CONDA_PREFIX}/include
+    $ENV{CONDA_PREFIX}/targets/x86_64-linux/include
 )
-
-message(STATUS "Verified Development Header:  ${NVML_INCLUDE_DIR}/nvml.h")
 
 # Declare the Compilation Target
 add_executable(vinntry_daemon
@@ -61,5 +50,5 @@ target_link_libraries(vinntry_daemon
 message(STATUS "--------------------------------------------------------")
 message(STATUS "VINNTRY HARDWARE MATCH COMPILER VERIFICATION:")
 message(STATUS "Found NVML Shared Driver: ${NVML_LIBRARY}")
-message(STATUS "Conda Directory Prefix:   ${CONDA_PREFIX}")
+message(STATUS "Conda Directory Prefix:   $ENV{CONDA_PREFIX}")
 message(STATUS "--------------------------------------------------------")
