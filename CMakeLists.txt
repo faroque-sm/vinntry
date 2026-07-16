@@ -9,10 +9,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Add compilation warnings to keep hardware interface logic pristine
 add_compile_options(-Wall -Wextra -Wpedantic -O3)
 
-# 1. Locate the Prometheus-CPP library inside Mamba environment
+# Locate the Prometheus-CPP library inside Mamba environment
 find_package(prometheus-cpp CONFIG REQUIRED)
 
-# 2. Locate the Native Host NVIDIA NVML Driver Library
+# Locate the Native Host NVIDIA NVML Driver Library
 # This searches standard Linux runtime engine paths for libnvidia-ml.so
 find_library(NVML_LIBRARY 
     NAMES nvidia-ml libnvidia-ml.so.1 libnvidia-ml.so
@@ -24,19 +24,31 @@ find_library(NVML_LIBRARY
     REQUIRED
 )
 
-# 3. Handle Header Include Paths
+find_path(NVML_INCLUDE_DIR
+    NAMES nvml.h
+    PATHS
+        /usr/include
+        /usr/local/cuda/include
+        /usr/include/nvidia/current  # Common path on enterprise Linux nodes
+    REQUIRED
+)
+
+# Handle Header Include Paths
 include_directories(
     include
+    ${NVML_INCLUDE_DIR} 
     ${CONDA_PREFIX}/include
 )
 
-# 4. Declare the Compilation Target
+message(STATUS "Verified Development Header:  ${NVML_INCLUDE_DIR}/nvml.h")
+
+# Declare the Compilation Target
 add_executable(vinntry_daemon
     src/main.cpp
     src/metric_collector.cpp
 )
 
-# 5. Link Shared Library Dependencies
+# Link Shared Library Dependencies
 target_link_libraries(vinntry_daemon
     PRIVATE
     prometheus-cpp::core
