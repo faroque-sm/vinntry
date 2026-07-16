@@ -9,3 +9,4 @@ dependencies:
   - ninja=1.11.1
   - prometheus-cpp=1.1.0
   - curl=8.5.0
+  - cuda-nvml-dev=12.4.127
