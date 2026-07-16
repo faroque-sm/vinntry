@@ -20,6 +20,10 @@ MetricCollector::MetricCollector(std::shared_ptr<prometheus::Registry> registry)
       gpu_temp_family_(prometheus::BuildGauge()
         .Name("nvml_gpu_temp_celsius")
         .Help("GPU Core Temperature Celsius")
+        .Register(*registry)),
+      gpu_clock_family_(prometheus::BuildGauge()
+        .Name("nvml_gpu_clock_mhz")
+        .Help("GPU Core Graphics Clock Megahertz")
         .Register(*registry)) {
 
     initialize_nvml();
@@ -58,6 +62,12 @@ void MetricCollector::update_metrics() {
         result = nvmlDeviceGetTemperature(handle, NVML_TEMPERATURE_GPU, &temp);
         if (result == NVML_SUCCESS) {
             metric_map_[i].gpu_temp->Set(static_cast<double>(temp));
+        }
+
+        uint32_t grapics_clock_mhz = 0;
+        result = nvmlDeviceGetClockInfo(handle, NVML_CLOCK_GRAPHICS, &grapics_clock_mhz);
+        if (result == NVML_SUCCESS) {
+            metric_map_[i].gpu_clock->Set(static_cast<double>(grapics_clock_mhz));
         }
     }
 }
@@ -106,6 +116,7 @@ void MetricCollector::register_devices() {
         metrics.mem_util = &mem_util_family_.Add(labels);
         metrics.fb_used = &fb_used_family_.Add(labels);
         metrics.gpu_temp = &gpu_temp_family_.Add(labels);
+        metrics.gpu_clock = &gpu_clock_family_.Add(labels);
 
         metric_map_[i] = metrics;
         std::cout << "[vinntry] Indexed profiling target [" << i << "]: " << gpu_name << std::endl;
