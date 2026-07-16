@@ -28,7 +28,7 @@ class MetricCollector {
         prometheus::Family<prometheus::Gauge>& gpu_temp_family_;
 
         // Metric Storage Index
-        // Holds the memory pointer for each discovered GPU to preent slow runtime allocations
+        // Holds the memory pointer for each discovered GPU to prevent slow runtime allocations
         struct DeviceMetrics {
             prometheus::Gauge* gpu_util{nullptr};
             prometheus::Gauge* mem_util{nullptr};
