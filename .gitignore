@@ -1,0 +1,59 @@
+# 1. Docker Runtime Storage
+prometheus_data/
+grafana_data/
+*.db
+*.sqlite
+*.wal
+
+# 2. C++ Native Build & Compilation Artifacts
+build/
+bin/
+lib/
+obj/
+out/
+CMakeFiles/
+CMakeCache.txt
+CMakeUserPresets.json
+cmake_install.cmake
+Makefile
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# 3. Mamba / Conda Internal Environments
+.conda/
+env/
+environments/
+conda-bld/
+
+# 4. Debug Logs & Core Dumps
+*.log
+crash_dumps/
+core
+core.*
+vgcore.*
+
+# 5. Local Hardware Configuration Secrets & Environment Envs
+.env
+.env.*
+secrets/
+config/grafana/dashboards/*.json.bak
+
+# 6. IDE / Code Editors Cache & Settings
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+.DS_Store

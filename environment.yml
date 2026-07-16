@@ -1,0 +1,11 @@
+name: vinntry-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - sysroot_linux-64=2.28
+  - gxx_linux-64=13.2.0
+  - cmake=3.28.1
+  - ninja=1.11.1
+  - prometheus-cpp=1.1.0
+  - curl=8.5.0
