@@ -16,12 +16,14 @@ find_package(prometheus-cpp CONFIG REQUIRED)
 # This searches standard Linux runtime engine paths for libnvidia-ml.so
 find_library(NVML_LIBRARY 
     NAMES nvidia-ml libnvidia-ml.so.1 libnvidia-ml.so
+    REQUIRED
     PATHS 
+        /usr/lib/wsl/lib               # wsl2 driver layer mapping
         /usr/lib/x86_64-linux-gnu
         /usr/lib64
         /usr/local/cuda/lib64
-        /usr/lib/wsl/lib         # wsl2 driver layer mapping
-    REQUIRED
+    NAMES_PER_DIR 
+    NO_DEFAULT_PATH
 )
 
 # Handle Header Include Paths
