@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'vinntry-dashboards'
+    orgId: 1
+    folder: 'vinntry Metrics'   # This is just the visual UI folder name inside your browser
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards # This points exactly to the mounted container volume
