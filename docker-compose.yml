@@ -23,7 +23,9 @@ services:
       - "3000:3000"
     volumes:
       - ./config/grafana/datasources:/etc/grafana/provisioning/datasources # Auto-loads datasource
-      - grafana_data:/var/lib/grafana
+      - ./config/grafana/dashboards:/etc/grafana/provisioning/dashboards # Auto-loads dashboards
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - grafana_data:/var/lib/grafana      
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=vinntry_pass
       - GF_USERS_ALLOW_SIGN_UP=false
