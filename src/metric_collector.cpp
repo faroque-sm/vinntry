@@ -24,6 +24,14 @@ MetricCollector::MetricCollector(std::shared_ptr<prometheus::Registry> registry)
       gpu_clock_family_(prometheus::BuildGauge()
         .Name("nvml_gpu_clock_mhz")
         .Help("GPU Core Graphics Clock Megahertz")
+        .Register(*registry)),      
+      pcie_tx_family_(prometheus::BuildGauge()
+        .Name("nvml_pcie_tx_kbs")
+        .Help("GPU PCIE Host-to-Device Transfer KiloBytesPerSecond")
+        .Register(*registry)),
+      pcie_rx_family_(prometheus::BuildGauge()
+        .Name("nvml_pcie_rx_kbs")
+        .Help("GPU PCIE Device-to-Host Transfer KiloBytesPerSecond")
         .Register(*registry)) {
 
     initialize_nvml();
@@ -68,6 +76,18 @@ void MetricCollector::update_metrics() {
         result = nvmlDeviceGetClockInfo(handle, NVML_CLOCK_GRAPHICS, &grapics_clock_mhz);
         if (result == NVML_SUCCESS) {
             metric_map_[i].gpu_clock->Set(static_cast<double>(grapics_clock_mhz));
+        }
+
+        unsigned int pcie_tx_kbs = 0;
+        result = nvmlDeviceGetPcieThroughput(handle, NVML_PCIE_UTIL_TX_BYTES, &pcie_tx_kbs);
+        if (result == NVML_SUCCESS) {
+            metric_map_[i].pcie_tx->Set(static_cast<double>(pcie_tx_kbs));
+        }
+
+        unsigned int pcie_rx_kbs = 0;
+        result = nvmlDeviceGetPcieThroughput(handle, NVML_PCIE_UTIL_RX_BYTES, &pcie_rx_kbs);
+        if (result == NVML_SUCCESS) {
+            metric_map_[i].pcie_rx->Set(static_cast<double>(pcie_rx_kbs));
         }
     }
 }
@@ -117,7 +137,9 @@ void MetricCollector::register_devices() {
         metrics.fb_used = &fb_used_family_.Add(labels);
         metrics.gpu_temp = &gpu_temp_family_.Add(labels);
         metrics.gpu_clock = &gpu_clock_family_.Add(labels);
-
+        metrics.pcie_tx = &pcie_tx_family_.Add(labels);
+        metrics.pcie_rx = &pcie_rx_family_.Add(labels);
+        
         metric_map_[i] = metrics;
         std::cout << "[vinntry] Indexed profiling target [" << i << "]: " << gpu_name << std::endl;
     }

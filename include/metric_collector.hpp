@@ -27,6 +27,8 @@ class MetricCollector {
         prometheus::Family<prometheus::Gauge>& fb_used_family_;
         prometheus::Family<prometheus::Gauge>& gpu_temp_family_;
         prometheus::Family<prometheus::Gauge>& gpu_clock_family_;
+        prometheus::Family<prometheus::Gauge>& pcie_tx_family_;
+        prometheus::Family<prometheus::Gauge>& pcie_rx_family_;
 
         // Metric Storage Index
         // Holds the memory pointer for each discovered GPU to prevent slow runtime allocations
@@ -36,6 +38,8 @@ class MetricCollector {
             prometheus::Gauge* fb_used{nullptr};
             prometheus::Gauge* gpu_temp{nullptr};
             prometheus::Gauge* gpu_clock{nullptr};
+            prometheus::Gauge* pcie_tx{nullptr};
+            prometheus::Gauge* pcie_rx{nullptr};
         };
 
         // Maps each GPU's numeric index (0, 1,2) to its respective tracking metrics
