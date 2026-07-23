@@ -3,8 +3,21 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <dlfcn.h>
 #include <prometheus/registry.h>
 #include <prometheus/gauge.h>
+
+// NVIDIA placeholder types that bypasses the need to include the nvml header
+// By copying the exact shapes of NVIDIA's data structures here the app can compile 
+// on any machine without needing the official NVIDIA toolkit installed
+typedef struct nvmlDevice_st* nvmlDevice_t;
+typedef enum nvmlReturn_enum {NVML_SUCCESS = 0} nvmlReturn_t;
+typedef enum nvmlClockType_enum {NVML_CLOCK_GRAPHICS = 0} nvmlClockType_t;
+typedef enum nvmlTemperatureSensors_enum {NVML_TEMPERATURE_GPU = 0} nvmlTemperatureSensors_t;
+typedef enum nvmlPcieUtilCounter_enum {NVML_PCIE_UTIL_TX_BYTES = 0 , NVML_PCIE_UTIL_RX_BYTES = 1}  nvmlPcieUtilCounter_t;
+
+struct nvmlMemory_t {unsigned long long total; unsigned long long free; unsigned long long used;};
+struct nvmlUtilization_t {unsigned int gpu; unsigned int memory;};
 
 class MetricCollector {
     public:
@@ -16,6 +29,27 @@ class MetricCollector {
         void update_metrics();
 
     private:
+        // Dynamic library loading variables
+        void* nvml_lib_handle_{nullptr};
+        bool load_nvml_library();
+
+        // Explicit function pointer variables
+        nvmlReturn_t (*nvmlInit_)(void){nullptr};
+        nvmlReturn_t (*nvmlShutdown_)(void){nullptr};
+        const char* (*nvmlErrorString_)(nvmlReturn_t){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetCount_)(unsigned int*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetHandleByIndex_)(unsigned int, nvmlDevice_t*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetName_)(nvmlDevice_t, char*, unsigned int){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetMemoryInfo_)(nvmlDevice_t, nvmlMemory_t*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetTemperature_)(nvmlDevice_t, 
+                                        nvmlTemperatureSensors_t, unsigned int*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetClockInfo_)(nvmlDevice_t, 
+                                        nvmlClockType_t, unsigned int*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetPcieThroughput_)(nvmlDevice_t, 
+                                        nvmlPcieUtilCounter_t, unsigned int*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetUtilizationRates_)(nvmlDevice_t, 
+                                        nvmlUtilization_t*){nullptr};
+
         unsigned int device_count_{0};
         bool nvml_initialized_{false};
         
