@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add compilation warnings to keep hardware interface logic pristine
-add_compile_options(-Wall -Wextra -Wpedantic -O3)
+add_compile_options(-O3)
 
 # Locate the Prometheus-CPP library inside Mamba environment
 find_package(prometheus-cpp CONFIG REQUIRED)

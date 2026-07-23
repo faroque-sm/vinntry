@@ -93,14 +93,14 @@ void MetricCollector::update_metrics() {
 }
 
 void MetricCollector::initialize_nvml() {
-    nvmlReturn_t result = nvmlInit();
+    nvmlReturn_t result = nvmlInit_v2();
     if (result != NVML_SUCCESS) {
         std::cerr << "[vinntry] CRITICAL: Failed to initialize NVML: " 
                             << nvmlErrorString(result) << std::endl;
         return;
     }
 
-    result = nvmlDeviceGetCount(&device_count_);
+    result = nvmlDeviceGetCount_v2(&device_count_);
     if (result != NVML_SUCCESS) {
         std::cerr << "[vinntry] Failed to fetch device count: " 
                             << nvmlErrorString(result) << std::endl;
@@ -118,7 +118,7 @@ void MetricCollector::register_devices() {
 
     for (unsigned int i = 0; i < device_count_; ++i) {
         nvmlDevice_t handle;
-        nvmlReturn_t result = nvmlDeviceGetHandleByIndex(i, &handle);
+        nvmlReturn_t result = nvmlDeviceGetHandleByIndex_v2(i, &handle);
         if (result != NVML_SUCCESS) continue;
 
         char name_buffer[64];
