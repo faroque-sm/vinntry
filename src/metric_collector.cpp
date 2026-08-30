@@ -8,6 +8,10 @@ MetricCollector::MetricCollector(std::shared_ptr<prometheus::Registry> registry)
         .Name("nvml_gpu_util_percent")
         .Help("GPU Compute Utilization Percentage")
         .Register(*registry)),
+      nvdec_util_family_(prometheus::BuildGauge()
+        .Name("nvml_nvdec_util_percent")
+        .Help("GPU Hardware Video Decoder ASIC Utilization")
+        .Register(*registry)),
       mem_util_family_(prometheus::BuildGauge()
         .Name("nvml_mem_util_percent")
         .Help("GPU Memory Utilization Percentage")
@@ -23,6 +27,14 @@ MetricCollector::MetricCollector(std::shared_ptr<prometheus::Registry> registry)
       gpu_clock_family_(prometheus::BuildGauge()
         .Name("nvml_gpu_clock_mhz")
         .Help("GPU Core Graphics Clock Megahertz")
+        .Register(*registry)),
+      gpu_power_family_(prometheus::BuildGauge()
+        .Name("nvml_power_usage_mwatts")
+        .Help("GPU Core Power Draw in Milliwatts")
+        .Register(*registry)),
+      gpu_power_limit_family_(prometheus::BuildGauge()
+        .Name("nvml_power_limit_mwatts")
+        .Help("GPU Enforced Hardware Power Limit in Milliwatts")
         .Register(*registry)),      
       pcie_tx_family_(prometheus::BuildGauge()
         .Name("nvml_pcie_tx_kbs")
@@ -89,12 +101,17 @@ bool MetricCollector::load_nvml_library() {
                          unsigned int*))dlsym(nvml_lib_handle_, "nvmlDeviceGetPcieThroughput");
     nvmlDeviceGetUtilizationRates_ = (nvmlReturn_t (*)(nvmlDevice_t, nvmlUtilization_t*))
                                         dlsym(nvml_lib_handle_, "nvmlDeviceGetUtilizationRates");
+
+    nvmlDeviceGetDecoderUtilization_ = (nvmlReturn_t (*)(nvmlDevice_t, unsigned int*, unsigned int*))dlsym(nvml_lib_handle_, "nvmlDeviceGetDecoderUtilization");
+    nvmlDeviceGetPowerUsage_ = (nvmlReturn_t (*)(nvmlDevice_t, unsigned int*))dlsym(nvml_lib_handle_, "nvmlDeviceGetPowerUsage");
+    nvmlDeviceGetEnforcedPowerLimit_ = (nvmlReturn_t (*)(nvmlDevice_t, unsigned int*))dlsym(nvml_lib_handle_, "nvmlDeviceGetEnforcedPowerLimit");
        
     // Ensure every required function resolved cleanly
     return (nvmlInit_ && nvmlShutdown_ && nvmlErrorString_ && nvmlDeviceGetCount_ && 
             nvmlDeviceGetHandleByIndex_ && nvmlDeviceGetName_ && nvmlDeviceGetMemoryInfo_ &&
             nvmlDeviceGetTemperature_ && nvmlDeviceGetClockInfo_ && 
-            nvmlDeviceGetPcieThroughput_ && nvmlDeviceGetUtilizationRates_);
+            nvmlDeviceGetPcieThroughput_ && nvmlDeviceGetUtilizationRates_ && 
+            nvmlDeviceGetDecoderUtilization_ && nvmlDeviceGetPowerUsage_ && nvmlDeviceGetEnforcedPowerLimit_);
 }
 
 void MetricCollector::update_metrics() {
@@ -110,6 +127,13 @@ void MetricCollector::update_metrics() {
         if (result == NVML_SUCCESS) {
             metric_map_[i].gpu_util->Set(static_cast<double>(utilization.gpu));
             metric_map_[i].mem_util->Set(static_cast<double>(utilization.memory));
+        }
+
+        unsigned int decoder_util = 0;
+        unsigned int decoder_sampling_period = 0;
+        result = nvmlDeviceGetDecoderUtilization_(handle, &decoder_util, &decoder_sampling_period);
+        if (result == NVML_SUCCESS) {
+            metric_map_[i].nvdec_util->Set(static_cast<double>(decoder_util));
         }
 
         nvmlMemory_t memory_info;
@@ -128,6 +152,18 @@ void MetricCollector::update_metrics() {
         result = nvmlDeviceGetClockInfo_(handle, NVML_CLOCK_GRAPHICS, &grapics_clock_mhz);
         if (result == NVML_SUCCESS) {
             metric_map_[i].gpu_clock->Set(static_cast<double>(grapics_clock_mhz));
+        }
+
+        unsigned int power_mw = 0;
+        result = nvmlDeviceGetPowerUsage_(handle, &power_mw);
+        if (result == NVML_SUCCESS) {
+            metric_map_[i].gpu_power->Set(static_cast<double>(power_mw));
+        }
+
+        unsigned int power_limit_mw = 0;
+        result = nvmlDeviceGetEnforcedPowerLimit_(handle, &power_limit_mw);
+        if (result == NVML_SUCCESS) {
+            metric_map_[i].gpu_power_limit->Set(static_cast<double>(power_limit_mw));
         }
 
         unsigned int pcie_tx_kbs = 0;
@@ -191,10 +227,13 @@ void MetricCollector::register_devices() {
 
         DeviceMetrics metrics;
         metrics.gpu_util = &gpu_util_family_.Add(labels);
+        metrics.nvdec_util = &nvdec_util_family_.Add(labels);
         metrics.mem_util = &mem_util_family_.Add(labels);
         metrics.fb_used = &fb_used_family_.Add(labels);
         metrics.gpu_temp = &gpu_temp_family_.Add(labels);
         metrics.gpu_clock = &gpu_clock_family_.Add(labels);
+        metrics.gpu_power = &gpu_power_family_.Add(labels);
+        metrics.gpu_power_limit = &gpu_power_limit_family_.Add(labels);
         metrics.pcie_tx = &pcie_tx_family_.Add(labels);
         metrics.pcie_rx = &pcie_rx_family_.Add(labels);
         

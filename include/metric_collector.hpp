@@ -50,6 +50,10 @@ class MetricCollector {
         nvmlReturn_t (*nvmlDeviceGetUtilizationRates_)(nvmlDevice_t, 
                                         nvmlUtilization_t*){nullptr};
 
+        nvmlReturn_t (*nvmlDeviceGetDecoderUtilization_)(nvmlDevice_t, unsigned int*, unsigned int*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetPowerUsage_)(nvmlDevice_t, unsigned int*){nullptr};
+        nvmlReturn_t (*nvmlDeviceGetEnforcedPowerLimit_ )(nvmlDevice_t, unsigned int*){nullptr}; 
+
         unsigned int device_count_{0};
         bool nvml_initialized_{false};
         
@@ -57,10 +61,13 @@ class MetricCollector {
         // These manage the groups of charts that share the same metric name but have
         // different labels
         prometheus::Family<prometheus::Gauge>& gpu_util_family_;
+        prometheus::Family<prometheus::Gauge>& nvdec_util_family_;
         prometheus::Family<prometheus::Gauge>& mem_util_family_;
         prometheus::Family<prometheus::Gauge>& fb_used_family_;
         prometheus::Family<prometheus::Gauge>& gpu_temp_family_;
         prometheus::Family<prometheus::Gauge>& gpu_clock_family_;
+        prometheus::Family<prometheus::Gauge>& gpu_power_family_;
+        prometheus::Family<prometheus::Gauge>& gpu_power_limit_family_;
         prometheus::Family<prometheus::Gauge>& pcie_tx_family_;
         prometheus::Family<prometheus::Gauge>& pcie_rx_family_;
 
@@ -68,10 +75,13 @@ class MetricCollector {
         // Holds the memory pointer for each discovered GPU to prevent slow runtime allocations
         struct DeviceMetrics {
             prometheus::Gauge* gpu_util{nullptr};
+            prometheus::Gauge* nvdec_util{nullptr};
             prometheus::Gauge* mem_util{nullptr};
             prometheus::Gauge* fb_used{nullptr};
             prometheus::Gauge* gpu_temp{nullptr};
             prometheus::Gauge* gpu_clock{nullptr};
+            prometheus::Gauge* gpu_power{nullptr};
+            prometheus::Gauge* gpu_power_limit{nullptr};
             prometheus::Gauge* pcie_tx{nullptr};
             prometheus::Gauge* pcie_rx{nullptr};
         };
