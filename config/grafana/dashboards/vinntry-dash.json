@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -29,55 +30,30 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "mode": "thresholds"
           },
           "mappings": [],
-          "max": 100,
-          "min": 0,
           "thresholds": {
-            "mode": "absolute",
+            "mode": "percentage",
             "steps": [
               {
                 "color": "green",
                 "value": null
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "dark-red",
+                "value": ""
+              },
+              {
+                "color": "yellow",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
         "overrides": []
       },
@@ -87,19 +63,20 @@
         "x": 0,
         "y": 0
       },
-      "id": 4,
+      "id": 10,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
+      "pluginVersion": "10.0.0",
       "targets": [
         {
           "datasource": {
@@ -107,15 +84,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_gpu_util_percent",
+          "expr": "(nvml_power_limit_mwatts - nvml_power_usage_mwatts) / 1000",
           "instant": false,
-          "legendFormat": "{{gpu_name}} Compute Load",
+          "legendFormat": "{{gpu_name}} Available Buffer",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "GPU Core Compute Utilization",
-      "type": "timeseries"
+      "title": "GPU Power Headroom Capacity",
+      "type": "gauge"
     },
     {
       "datasource": {
@@ -253,7 +230,6 @@
               "mode": "off"
             }
           },
-          "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -268,7 +244,7 @@
               }
             ]
           },
-          "unit": "suffix: MHz"
+          "unit": "watt"
         },
         "overrides": []
       },
@@ -278,7 +254,7 @@
         "x": 0,
         "y": 8
       },
-      "id": 1,
+      "id": 9,
       "options": {
         "legend": {
           "calcs": [],
@@ -298,14 +274,27 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_gpu_clock_mhz",
+          "expr": "nvml_power_usage_mwatts / 1000",
           "instant": false,
-          "legendFormat": "{{gpu_name}} - Index {{device_index}}",
+          "legendFormat": "{{gpu_name}} Live Power Draw",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "nvml_power_limit_mwatts  / 1000",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "{{gpu_name}} Enforced Hardware Cap",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "GPU Core Real-Time Frequency",
+      "title": "GPU Operational Power Load vs Enforced Thresholds",
       "type": "timeseries"
     },
     {
@@ -457,7 +446,7 @@
               }
             ]
           },
-          "unit": "KiBs"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -467,7 +456,7 @@
         "x": 0,
         "y": 16
       },
-      "id": 6,
+      "id": 8,
       "options": {
         "legend": {
           "calcs": [],
@@ -487,14 +476,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_pcie_tx_kbs{device_index=\"0\"}",
+          "expr": "nvml_nvdec_util_percent",
           "instant": false,
-          "legendFormat": "{{gpu_name}} (Node: {{device_index}})",
+          "legendFormat": "{{gpu_name}} (Node: {{device_index}}) NVDEC Load",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "GPU PCIE Host-to-Device Transfer",
+      "title": "GPU Hardware Video Decoder ASIC Utilization (NVDEC)",
       "type": "timeseries"
     },
     {
@@ -551,7 +540,7 @@
               }
             ]
           },
-          "unit": "KBs"
+          "unit": "celsius"
         },
         "overrides": []
       },
@@ -560,6 +549,290 @@
         "w": 12,
         "x": 12,
         "y": 16
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "nvml_gpu_temp_celsius",
+          "instant": false,
+          "legendFormat": "{{gpu_name}} Temp",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Core Temperature Limits",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "nvml_gpu_util_percent",
+          "instant": false,
+          "legendFormat": "{{gpu_name}} Compute Load",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Core Compute Utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "suffix: MHz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "nvml_gpu_clock_mhz",
+          "instant": false,
+          "legendFormat": "{{gpu_name}} - Index {{device_index}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Core Real-Time Frequency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "KBs"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
       },
       "id": 7,
       "options": {
@@ -636,8 +909,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -645,17 +917,17 @@
               }
             ]
           },
-          "unit": "celsius"
+          "unit": "KiBs"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 24
+        "x": 12,
+        "y": 32
       },
-      "id": 3,
+      "id": 6,
       "options": {
         "legend": {
           "calcs": [],
@@ -675,14 +947,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_gpu_temp_celsius",
+          "expr": "nvml_pcie_tx_kbs{device_index=\"0\"}",
           "instant": false,
-          "legendFormat": "{{gpu_name}} Temp",
+          "legendFormat": "{{gpu_name}} (Node: {{device_index}})",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "GPU Core Temperature Limits",
+      "title": "GPU PCIE Host-to-Device Transfer",
       "type": "timeseries"
     }
   ],
@@ -706,8 +978,8 @@
     ]
   },
   "timezone": "",
-  "title": "vinntry-dash",
-  "uid": "d042f86b-e32d-4805-8454-4dea92edce5d",
+  "title": "vinntry-dash Copy",
+  "uid": "f64eafd8-f4c7-4942-9f73-96f4e6e6a98b",
   "version": 1,
   "weekStart": ""
 }
