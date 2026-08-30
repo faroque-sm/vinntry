@@ -55,7 +55,9 @@ int main() {
         auto registry = std::make_shared<prometheus::Registry>();
 
         // Initiate native NVML metric poller engine
-        MetricCollector collector{registry};
+        auto* collector = new MetricCollector(registry);
+        // Store the valid memory address inside the atomic global bridge
+        g_active_collector.store(collector, std::memory_order_release);
 
         // Connect the registry data block to the HTTP server mapping
         exposer.RegisterCollectable(registry);
@@ -71,7 +73,7 @@ int main() {
         // High-Resolution Drift-Compensated Execution Loop
         while (g_running) {
             // Execute the direct C-level hardware driver polling pass
-            collector.update_metrics();
+            collector->update_metrics();
 
             // Calculate the exact absolute time point for the next scheduled tick
             next_tick += interval;
@@ -80,11 +82,17 @@ int main() {
             std::this_thread::sleep_until(next_tick);
         }
 
-        // Wipe the tracking pointer before a natural return exit sequence
-        g_active_collector.store(nullptr, std::memory_order_release);
+         // Clean cleanup for natural exit path
+        auto* clean_ptr = g_active_collector.exchange(nullptr, std::memory_order_acq_rel);
+        if (clean_ptr) {
+            delete clean_ptr; // Invokes destructor exactly once safely
+        }
 
     } catch (const std::exception& e) {
         std::cerr << "[vinntry] FATAL RUNTIME EXCEPTION: " << e.what() << std::endl;
+        // Fallback protection if an initialization exception fired post-allocation
+        auto* err_ptr = g_active_collector.exchange(nullptr, std::memory_order_acq_rel);
+        if (err_ptr) delete err_ptr;
         return 1;
     }
 
