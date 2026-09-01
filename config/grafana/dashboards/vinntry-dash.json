@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -29,31 +29,25 @@
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
           "mappings": [],
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-red",
                 "value": null
               },
               {
-                "color": "dark-red",
-                "value": ""
-              },
-              {
                 "color": "yellow",
-                "value": ""
+                "value": 20
               },
               {
-                "color": "#EAB839",
-                "value": ""
+                "color": "green",
+                "value": 80
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": []
       },
@@ -65,6 +59,9 @@
       },
       "id": 10,
       "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -73,8 +70,7 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "textMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -92,7 +88,7 @@
         }
       ],
       "title": "GPU Power Headroom Capacity",
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -978,8 +974,8 @@
     ]
   },
   "timezone": "",
-  "title": "vinntry-dash Copy",
-  "uid": "f64eafd8-f4c7-4942-9f73-96f4e6e6a98b",
+  "title": "vinntry-dash Copy Copy",
+  "uid": "b7d8e777-8d29-468c-9e48-ac36fb1596bb",
   "version": 1,
   "weekStart": ""
 }
