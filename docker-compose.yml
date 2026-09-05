@@ -25,11 +25,14 @@ services:
       - ./config/grafana/datasources:/etc/grafana/provisioning/datasources # Auto-loads datasource
       - ./config/grafana/dashboards:/etc/grafana/provisioning/dashboards # Auto-loads dashboards
       - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
-      - grafana_data:/var/lib/grafana      
+      - ./data:/data
+      - grafana_data:/var/lib/grafana   
+
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=vinntry_pass
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_DASHBOARDS_MIN_REFRESH_INTERVAL=100ms
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
     networks:
       - vinntry-net
 

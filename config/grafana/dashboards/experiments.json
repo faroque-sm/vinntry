@@ -1,0 +1,591 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n  environment_type AS \"Environment\", \n  gpu_model AS \"GPU Model\", \n  compute_capability AS \"Compute Cap\", \n  pipeline_memory_allocator AS \"Memory Allocator\", \n  cuda_stream_count AS \"Active Streams\" \nFROM experiment_runs \nWHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n  environment_type AS \"Environment\", \n  gpu_model AS \"GPU Model\", \n  compute_capability AS \"Compute Cap\", \n  pipeline_memory_allocator AS \"Memory Allocator\", \n  cuda_stream_count AS \"Active Streams\" \nFROM experiment_runs \nWHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Run Metadata",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "µs"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n  frame_ingestion_avg_us AS \"1. Ingest & Decode\",\n  cpu_preprocess_avg_us AS \"2. CPU PreProcess\",\n  pcie_h2d_memcpy_avg_us AS \"3. PCIe H2D Copy\",\n  gpu_compute_avg_us     AS \"4. GPU Compute SM\",\n  pcie_d2h_memcpy_avg_us AS \"5. PCIe D2H Copy\",\n  cpu_postprocess_avg_us AS \"6. CPU PostProcess\",\n  nvdec_disk_write_avg_us AS \"7. Disk Write NVENC\"\nFROM micro_timeline_metrics \nWHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n  frame_ingestion_avg_us AS \"1. Ingest & Decode\",\n  cpu_preprocess_avg_us AS \"2. CPU PreProcess\",\n  pcie_h2d_memcpy_avg_us AS \"3. PCIe H2D Copy\",\n  gpu_compute_avg_us     AS \"4. GPU Compute SM\",\n  pcie_d2h_memcpy_avg_us AS \"5. PCIe D2H Copy\",\n  cpu_postprocess_avg_us AS \"6. CPU PostProcess\",\n  nvdec_disk_write_avg_us AS \"7. Disk Write NVENC\"\nFROM micro_timeline_metrics \nWHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Phase Cost Breakdowns",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT gpu_idle_time_pct FROM micro_timeline_metrics WHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT gpu_idle_time_pct FROM micro_timeline_metrics WHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "GPU Idle Time",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT pcie_bus_saturation_pct FROM micro_timeline_metrics WHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT pcie_bus_saturation_pct FROM micro_timeline_metrics WHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "PCIE Bus Saturation",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "fps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT average_fps FROM macro_metrics WHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT average_fps FROM macro_metrics WHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Inference Throughput",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n  stream_concurrency_ms AS \"Stream Concurrency (ms)\", \n  cpu_sync_stalls_ms AS \"Forced CPU Sync Stalls (ms)\", \n  driver_launch_api_tax_us AS \"Driver Launch API Tax (us)\" \nFROM micro_timeline_metrics \nWHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n  stream_concurrency_ms AS \"Stream Concurrency (ms)\", \n  cpu_sync_stalls_ms AS \"Forced CPU Sync Stalls (ms)\", \n  driver_launch_api_tax_us AS \"Driver Launch API Tax (us)\" \nFROM micro_timeline_metrics \nWHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Latency Taxes",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Action"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Launch Telemetry",
+                    "url": "${__data.fields.url_link}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "url_link"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 24
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n    '🛸 Launch Time-Locked View' AS \"Action\",\n    -- FIXED: Links to the base root URL structure and injects the time ranges + refresh flags\n    '/?orgId=1&refresh=250ms&from=' || (start_time * 1000) || '&to=' || (end_time * 1000) AS url_link\nFROM experiment_runs \nWHERE run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    '🛸 Launch Time-Locked View' AS \"Action\",\n    -- FIXED: Links to the base root URL structure and injects the time ranges + refresh flags\n    '/?orgId=1&refresh=250ms&from=' || (start_time * 1000) || '&to=' || (end_time * 1000) AS url_link\nFROM experiment_runs \nWHERE run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Cross-Dashboard Telemetry Portal",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "run_geforcertx2070_WSL2_Docker_1788604122",
+          "value": "run_geforcertx2070_WSL2_Docker_1788604122"
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+        },
+        "definition": "SELECT run_id FROM experiment_runs ORDER BY start_time DESC;",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "run_id",
+        "options": [],
+        "query": "SELECT run_id FROM experiment_runs ORDER BY start_time DESC;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "experiments",
+  "uid": "aad8839a-1ff8-412d-9103-c8155dfccc7e",
+  "isStarred": true,
+  "version": 1,
+  "weekStart": ""
+}
