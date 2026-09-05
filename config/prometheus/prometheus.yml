@@ -1,5 +1,6 @@
 global:
   scrape_interval: 250ms       # 4Hz sampling for microsecond drift capture
+  scrape_timeout: 240ms
   evaluation_interval: 250ms
 
 scrape_configs:

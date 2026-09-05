@@ -7,3 +7,5 @@ datasources:
     url: http://prometheus:9090 # Internal docker network routing to TSDB container
     isDefault: true
     editable: false
+    jsonData:
+      timeInterval: "250ms"
