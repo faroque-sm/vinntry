@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -80,7 +80,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "(nvml_power_limit_mwatts - nvml_power_usage_mwatts) / 1000",
+          "expr": "(nvml_power_limit_mwatts{device_index=\"$device\"} - nvml_power_usage_mwatts{device_index=\"$device\"}) / 1000",
           "instant": false,
           "legendFormat": "{{gpu_name}} Available Buffer",
           "range": true,
@@ -176,7 +176,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_mem_util_percent",
+          "expr": "nvml_mem_util_percent{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} Mem Controller Load",
           "range": true,
@@ -270,7 +270,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_power_usage_mwatts / 1000",
+          "expr": "nvml_power_usage_mwatts{device_index=\"$device\"} / 1000",
           "instant": false,
           "legendFormat": "{{gpu_name}} Live Power Draw",
           "range": true,
@@ -282,7 +282,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_power_limit_mwatts  / 1000",
+          "expr": "nvml_power_limit_mwatts{device_index=\"$device\"}  / 1000",
           "hide": false,
           "instant": false,
           "legendFormat": "{{gpu_name}} Enforced Hardware Cap",
@@ -378,7 +378,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_fb_mem_bytes",
+          "expr": "nvml_fb_mem_bytes{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} Memory Allocation",
           "range": true,
@@ -472,7 +472,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_nvdec_util_percent",
+          "expr": "nvml_nvdec_util_percent{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} (Node: {{device_index}}) NVDEC Load",
           "range": true,
@@ -566,7 +566,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_gpu_temp_celsius",
+          "expr": "nvml_gpu_temp_celsius{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} Temp",
           "range": true,
@@ -662,7 +662,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_gpu_util_percent",
+          "expr": "nvml_gpu_util_percent{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} Compute Load",
           "range": true,
@@ -757,7 +757,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_gpu_clock_mhz",
+          "expr": "nvml_gpu_clock_mhz{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} - Index {{device_index}}",
           "range": true,
@@ -812,7 +812,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -850,7 +851,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_pcie_rx_kbs{device_index=\"0\"}",
+          "expr": "nvml_pcie_rx_kbs{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} (Node: {{device_index}})",
           "range": true,
@@ -905,7 +906,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -943,7 +945,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "nvml_pcie_tx_kbs{device_index=\"0\"}",
+          "expr": "nvml_pcie_tx_kbs{device_index=\"$device\"}",
           "instant": false,
           "legendFormat": "{{gpu_name}} (Node: {{device_index}})",
           "range": true,
@@ -959,7 +961,34 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "0",
+          "value": "0"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "definition": "label_values(nvml_pcie_rx_kbs,device_index)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "device",
+        "options": [],
+        "query": {
+          "query": "label_values(nvml_pcie_rx_kbs,device_index)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-30s",
@@ -975,8 +1004,7 @@
   },
   "timezone": "",
   "title": "vinntry-dash",
-  "uid": "b7d8e777-8d29-468c-9e48-ac36fb1596bb",
-  "isStarred": true,
+  "uid": "bf82c611-6a3f-4cc2-83ac-751fed487883",
   "version": 1,
   "weekStart": ""
 }
