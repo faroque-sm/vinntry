@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 9,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -30,11 +30,13 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "shades"
           },
           "custom": {
             "align": "auto",
             "cellOptions": {
+              "mode": "gradient",
               "type": "color-background"
             },
             "inspect": false
@@ -99,7 +101,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "purple",
+            "mode": "shades"
           },
           "custom": {
             "align": "auto",
@@ -168,7 +171,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-BlPu"
           },
           "mappings": [],
           "thresholds": {
@@ -196,9 +199,9 @@
       },
       "id": 11,
       "options": {
-        "colorMode": "value",
+        "colorMode": "background_solid",
         "graphMode": "area",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -237,7 +240,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -265,9 +268,9 @@
       },
       "id": 2,
       "options": {
-        "colorMode": "value",
+        "colorMode": "background",
         "graphMode": "area",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -306,7 +309,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "#181849",
+            "mode": "shades"
           },
           "mappings": [],
           "thresholds": {
@@ -315,10 +319,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -334,9 +334,9 @@
       },
       "id": 15,
       "options": {
-        "colorMode": "value",
+        "colorMode": "background",
         "graphMode": "area",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -384,11 +384,19 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-red",
                 "value": null
               },
               {
-                "color": "red",
+                "color": "dark-orange",
+                "value": 20
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "green",
                 "value": 80
               }
             ]
@@ -457,7 +465,15 @@
                 "value": null
               },
               {
-                "color": "red",
+                "color": "yellow",
+                "value": 20
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "dark-red",
                 "value": 80
               }
             ]
@@ -520,11 +536,19 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-red",
                 "value": null
               },
               {
-                "color": "red",
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "green",
                 "value": 80
               }
             ]
@@ -650,7 +674,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "mappings": [],
           "thresholds": {
@@ -677,9 +701,9 @@
       },
       "id": 10,
       "options": {
-        "colorMode": "value",
+        "colorMode": "background",
         "graphMode": "area",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -822,7 +846,370 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "fixedColor": "#4c40118c",
+            "mode": "shades"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 17,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n    json_extract(je.value, '$.type_id')           AS \"Overhead ID\",\n    json_extract(je.value, '$.constant_name')     AS \"NVIDIA Internal Constant Name\",\n    json_extract(je.value, '$.total_tax_us')       AS \"Total Tax (us)\",\n    json_extract(je.value, '$.event_invocations')  AS \"Event Invocations\"\nFROM micro_timeline_metrics t,\njson_each(t.profiler_overhead_breakdown_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Total Tax (us)\" DESC;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    json_extract(je.value, '$.type_id')           AS \"Overhead ID\",\n    json_extract(je.value, '$.constant_name')     AS \"NVIDIA Internal Constant Name\",\n    json_extract(je.value, '$.total_tax_us')       AS \"Total Tax (us)\",\n    json_extract(je.value, '$.event_invocations')  AS \"Event Invocations\"\nFROM micro_timeline_metrics t,\njson_each(t.profiler_overhead_breakdown_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Total Tax (us)\" DESC;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "⚠️ Complete Profiler Overhead Breakdown",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#868585",
+            "mode": "shades"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 18,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n    json_extract(je.value, '$.api_function_name')     AS \"CUDA API Function Call Name\",\n    json_extract(je.value, '$.total_blocked_us')      AS \"Total CPU Blocking Time (us)\",\n    json_extract(je.value, '$.total_invocation_count') AS \"Total Invocation Count\"\nFROM micro_timeline_metrics t,\njson_each(t.cuda_api_driver_call_tax_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Total CPU Blocking Time (us)\" DESC\nLIMIT 5;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    json_extract(je.value, '$.api_function_name')     AS \"CUDA API Function Call Name\",\n    json_extract(je.value, '$.total_blocked_us')      AS \"Total CPU Blocking Time (us)\",\n    json_extract(je.value, '$.total_invocation_count') AS \"Total Invocation Count\"\nFROM micro_timeline_metrics t,\njson_each(t.cuda_api_driver_call_tax_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Total CPU Blocking Time (us)\" DESC\nLIMIT 5;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "📉 CUDA Driver API Blocked Latency Breakdown",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#1471a454",
+            "mode": "shades"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 21,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n    json_extract(je.value, '$.hardware_stream_id')   AS \"Hardware Stream ID\",\n    json_extract(je.value, '$.workload_category')    AS \"Workload Category\",\n    json_extract(je.value, '$.total_task_packets')    AS \"Total Task Packets\",\n    json_extract(je.value, '$.total_active_silicon_us') AS \"Total Active Silicon Time (us)\"\nFROM micro_timeline_metrics t,\njson_each(t.physical_stream_hardware_occupancy_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Hardware Stream ID\" ASC, \"Total Active Silicon Time (us)\" DESC;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    json_extract(je.value, '$.hardware_stream_id')   AS \"Hardware Stream ID\",\n    json_extract(je.value, '$.workload_category')    AS \"Workload Category\",\n    json_extract(je.value, '$.total_task_packets')    AS \"Total Task Packets\",\n    json_extract(je.value, '$.total_active_silicon_us') AS \"Total Active Silicon Time (us)\"\nFROM micro_timeline_metrics t,\njson_each(t.physical_stream_hardware_occupancy_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Hardware Stream ID\" ASC, \"Total Active Silicon Time (us)\" DESC;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "📌 Physical Stream Hardware Occupancy",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#eff7ed",
+            "mode": "shades"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 19,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n    json_extract(je.value, '$.kind_id')                  AS \"Kind ID\",\n    json_extract(je.value, '$.silicon_direction')        AS \"True Silicon Direction\",\n    json_extract(je.value, '$.hardware_silicon_duration_us') AS \"Hardware Silicon Duration (us)\",\n    json_extract(je.value, '$.effective_throughput_gbs') AS \"Effective Throughput (GB/s)\",\n    json_extract(je.value, '$.total_transfers_count')     AS \"Total Physical Transfers Count\"\nFROM micro_timeline_metrics t,\njson_each(t.true_silicon_physical_memcpy_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Hardware Silicon Duration (us)\" DESC;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    json_extract(je.value, '$.kind_id')                  AS \"Kind ID\",\n    json_extract(je.value, '$.silicon_direction')        AS \"True Silicon Direction\",\n    json_extract(je.value, '$.hardware_silicon_duration_us') AS \"Hardware Silicon Duration (us)\",\n    json_extract(je.value, '$.effective_throughput_gbs') AS \"Effective Throughput (GB/s)\",\n    json_extract(je.value, '$.total_transfers_count')     AS \"Total Physical Transfers Count\"\nFROM micro_timeline_metrics t,\njson_each(t.true_silicon_physical_memcpy_json) je\nWHERE t.run_id = '$run_id'\nORDER BY \"Hardware Silicon Duration (us)\" DESC;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "📊 True Silicon Physical Hardware Memcpy Extractions",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#99987ab0",
+            "mode": "shades"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "id": 20,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+          },
+          "queryText": "SELECT \n    json_extract(je.value, '$.workload_name')       AS \"Hardware Workload Name\",\n    json_extract(je.value, '$.total_executions')    AS \"Total Executions\",\n    json_extract(je.value, '$.min_queue_delay_us')  AS \"Min Queue Delay (us)\",\n    json_extract(je.value, '$.avg_queue_delay_us')  AS \"Avg Queue Delay (us)\",\n    json_extract(je.value, '$.max_queue_delay_us')  AS \"Max Queue Delay (us)\"\nFROM micro_timeline_metrics t,\njson_each(t.host_to_device_queue_delay_json) je\nWHERE t.run_id = '$run_id';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    json_extract(je.value, '$.workload_name')       AS \"Hardware Workload Name\",\n    json_extract(je.value, '$.total_executions')    AS \"Total Executions\",\n    json_extract(je.value, '$.min_queue_delay_us')  AS \"Min Queue Delay (us)\",\n    json_extract(je.value, '$.avg_queue_delay_us')  AS \"Avg Queue Delay (us)\",\n    json_extract(je.value, '$.max_queue_delay_us')  AS \"Max Queue Delay (us)\"\nFROM micro_timeline_metrics t,\njson_each(t.host_to_device_queue_delay_json) je\nWHERE t.run_id = '$run_id';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "🔎 Host-to-Device Queue Execution Delay",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-red",
             "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -837,32 +1224,132 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "µs"
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Weight/"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "color"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "displayName",
+                "value": "Relative Percentage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Stage/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Duration/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "continuous-GrYlRd"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "µs"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 13,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 54
       },
-      "id": 4,
+      "id": 16,
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+        "cellHeight": "lg",
+        "footer": {
+          "countRows": false,
           "fields": "",
-          "values": false
+          "reducer": [
+            "sum"
+          ],
+          "show": false
         },
-        "showUnfilled": true,
-        "valueMode": "color"
+        "showHeader": true
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -871,9 +1358,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "cfc82962-4968-49ed-80c2-7c9a7cce72ab"
           },
-          "queryText": "SELECT \n  frame_ingestion_avg_us AS \"1. Ingest & Decode\",\n  cpu_preprocess_avg_us AS \"2. CPU PreProcess\",\n  pcie_h2d_memcpy_avg_us AS \"3. PCIe H2D Copy\",\n  gpu_compute_avg_us     AS \"4. Average GPU Compute\",\n  pcie_d2h_memcpy_avg_us AS \"5. PCIe D2H Copy\",\n  cpu_postprocess_avg_us AS \"6. CPU PostProcess\",\n  nvdec_disk_write_avg_us AS \"7. Disk Write NVENC\"\nFROM micro_timeline_metrics \nWHERE run_id = '$run_id';\n",
+          "queryText": "WITH total_window_cte AS (\n    SELECT (\n        frame_ingestion_avg_us + cpu_preprocess_avg_us + pcie_h2d_memcpy_avg_us + \n        gpu_compute_avg_us + pcie_d2h_memcpy_avg_us + cpu_postprocess_avg_us + nvdec_disk_write_avg_us\n    ) AS total_frame_us\n    FROM micro_timeline_metrics\n    WHERE run_id = '$run_id'\n)\nSELECT '1. Ingest & Decode' AS [Stage], m.frame_ingestion_avg_us AS [Duration], ROUND((m.frame_ingestion_avg_us / t.total_frame_us) * 100.0, 1) AS [Weight] FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '2. CPU Pre-Process', m.cpu_preprocess_avg_us, ROUND((m.cpu_preprocess_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '3. PCIe H2D Copy', m.pcie_h2d_memcpy_avg_us, ROUND((m.pcie_h2d_memcpy_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '4. Average GPU Compute', m.gpu_compute_avg_us, ROUND((m.gpu_compute_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '5. PCIe D2H  Copy', m.pcie_d2h_memcpy_avg_us, ROUND((m.pcie_d2h_memcpy_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '6. CPU Post-Process', m.cpu_postprocess_avg_us, ROUND((m.cpu_postprocess_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '7. Disk Write', m.nvdec_disk_write_avg_us, ROUND((m.nvdec_disk_write_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id';\n",
           "queryType": "table",
-          "rawQueryText": "SELECT \n  frame_ingestion_avg_us AS \"1. Ingest & Decode\",\n  cpu_preprocess_avg_us AS \"2. CPU PreProcess\",\n  pcie_h2d_memcpy_avg_us AS \"3. PCIe H2D Copy\",\n  gpu_compute_avg_us     AS \"4. Average GPU Compute\",\n  pcie_d2h_memcpy_avg_us AS \"5. PCIe D2H Copy\",\n  cpu_postprocess_avg_us AS \"6. CPU PostProcess\",\n  nvdec_disk_write_avg_us AS \"7. Disk Write NVENC\"\nFROM micro_timeline_metrics \nWHERE run_id = '$run_id';\n",
+          "rawQueryText": "WITH total_window_cte AS (\n    SELECT (\n        frame_ingestion_avg_us + cpu_preprocess_avg_us + pcie_h2d_memcpy_avg_us + \n        gpu_compute_avg_us + pcie_d2h_memcpy_avg_us + cpu_postprocess_avg_us + nvdec_disk_write_avg_us\n    ) AS total_frame_us\n    FROM micro_timeline_metrics\n    WHERE run_id = '$run_id'\n)\nSELECT '1. Ingest & Decode' AS [Stage], m.frame_ingestion_avg_us AS [Duration], ROUND((m.frame_ingestion_avg_us / t.total_frame_us) * 100.0, 1) AS [Weight] FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '2. CPU Pre-Process', m.cpu_preprocess_avg_us, ROUND((m.cpu_preprocess_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '3. PCIe H2D Copy', m.pcie_h2d_memcpy_avg_us, ROUND((m.pcie_h2d_memcpy_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '4. Average GPU Compute', m.gpu_compute_avg_us, ROUND((m.gpu_compute_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '5. PCIe D2H  Copy', m.pcie_d2h_memcpy_avg_us, ROUND((m.pcie_d2h_memcpy_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '6. CPU Post-Process', m.cpu_postprocess_avg_us, ROUND((m.cpu_postprocess_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id'\nUNION ALL\nSELECT '7. Disk Write', m.nvdec_disk_write_avg_us, ROUND((m.nvdec_disk_write_avg_us / t.total_frame_us) * 100.0, 1) FROM micro_timeline_metrics m, total_window_cte t WHERE m.run_id = '$run_id';\n",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -882,11 +1369,23 @@
         }
       ],
       "title": "⏱️ Pipeline Execution Phase Cost Breakdowns",
-      "transformations": [],
-      "type": "bargauge"
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "Stage",
+                "handlerKey": "field.label"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -894,9 +1393,9 @@
     "list": [
       {
         "current": {
-          "selected": true,
-          "text": "run_geforcertx2070_WSL2_Host_1788742243",
-          "value": "run_geforcertx2070_WSL2_Host_1788742243"
+          "selected": false,
+          "text": "run_geforcertx2070_WSL2_Docker_1789120621",
+          "value": "run_geforcertx2070_WSL2_Docker_1789120621"
         },
         "datasource": {
           "type": "frser-sqlite-datasource",
@@ -918,13 +1417,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
-    "to": "now"
+    "from": "2026-09-07T07:09:52.197Z",
+    "to": "2026-09-15T07:09:52.197Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "experiments",
   "uid": "aad8839a-1ff8-412d-9103-c8155dfccc7e",
-  "version": 5,
+  "version": 1,
   "weekStart": ""
 }

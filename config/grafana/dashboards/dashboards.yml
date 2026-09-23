@@ -3,7 +3,7 @@ apiVersion: 1
 providers:
   - name: 'vinntry-dashboards'
     orgId: 1
-    folder: 'vinntry Metrics'   # This is just the visual UI folder name inside your browser
+    folder: 'vinntry Metrics'   # This is just the visual UI folder name inside browser
     type: file
     disableDeletion: false
     editable: true
