@@ -83,23 +83,23 @@ The dashboard uses a compact, high-density layout to maximize data visibility:
 *   **`PCIe Bus Saturation (%)`**: Calculated by mapping achieved throughput speeds over the physical limit of the detected PCIe generation slot width (e.g., **15.75 GB/s ceiling on PCIe Gen3 x16**).
     *   *Remediation:* If this indicator climbs above 85-90%, the interconnect lane is choked. Compress the data pipeline by moving to device-side hardware image decoding (NVDEC) to copy raw compressed bitstreams over the bus instead of massive, uncompressed pixel arrays.
 *   **`Silicon Core Processing Idle Ratio (%)`**: Measures the ratio of active math calculation time against total pipeline context duration.
-    *   *Remediation:* High values (**>80%**) signal a heavily **I/O Bound** bottleneck. This indicates your computing kernels are so fast that the processor sits stalled waiting for slow CPU ingestion loops or memory copies.
-*   **`Macro Compute Efficiency Ratio (%)`**: Measures pure compute kernel durations against the absolute execution runtime box of your test workload.
-    *   *Remediation:* If this number is extremely low, it proves that your computing workload is too light for the hardware. You should scale up by expanding batch sizes, stacking multiple models, or swapping your toy kernel out for deep-learning inference engines (TensorRT) to saturate the compute grid.
+    *   *Remediation:* High values (**>80%**) signal a heavily **I/O Bound** bottleneck. This indicates computing kernels are so fast that the processor sits stalled waiting for slow CPU ingestion loops or memory copies.
+*   **`Macro Compute Efficiency Ratio (%)`**: Measures pure compute kernel durations against the absolute execution runtime box of test workload.
+    *   *Remediation:* If this number is extremely low, it proves that computing workload is too light for the hardware. You should scale up by expanding batch sizes, stacking multiple models, or swapping toy kernel out for deep-learning inference engines (TensorRT) to saturate the compute grid.
 
 #### 2. Friction & Scheduling Contention Taxes
 *   **`Stream Concurrency (ms)`**: The total combined time multiple asynchronous streams (`cudaStreamNonBlocking`) were running code on the SMs at the exact same physical instant.
-    *   *Remediation:* Must remain **>0.00 ms** in production multi-stream layouts. If it drops to zero, your parallel streams have serialized at the driver layer due to an unintended synchronization bottleneck.
+    *   *Remediation:* Must remain **>0.00 ms** in production multi-stream layouts. If it drops to zero, parallel streams have serialized at the driver layer due to an unintended synchronization bottleneck.
 *   **`Forced Driver Sync Stalls (ms)`**: Time wasted by hard, thread-blocking API calls like `cudaStreamSynchronize` or `cudaDeviceSynchronize`.
     *   *Remediation:* Must remain **0.00 ms**. High values prove that a bad architectural call is forcing the entire execution grid to slam on the brakes.
 *   **`OS Runtime Thread Wait (ms)`**: Extracted out of the native `OSRT_API` tracking tables. Measures the time the host CPU spent asleep waiting on asynchronous double-buffered ring slots to unlock.
-    *   *Remediation:* Exposes resource starvation. If high, your CPU thread is out-pacing the GPU queues, proving that you need to widen your array of ring buffer memory slots.
+    *   *Remediation:* Exposes resource starvation. If high, CPU thread is out-pacing the GPU queues, proving that you need to widen array of ring buffer memory slots.
 *   **`Driver Launch API Tax (us)`**: The raw entry and verification processing duration consumed natively by the NVIDIA driver runtime context while passing execution queues onto the hardware ring buffer.
-    *   *Remediation:* If this value balloons while your GPU compute time stays microscopic, utilize **CUDA Graphs (`cudaGraphCreate`)** to define your execution tree once at initialization, bypassing driver verification logic on every frame launch tick.
+    *   *Remediation:* If this value balloons while GPU compute time stays microscopic, utilize **CUDA Graphs (`cudaGraphCreate`)** to define execution tree once at initialization, bypassing driver verification logic on every frame launch tick.
 
 ### 🛰️ Cross-Dashboard Time-Locked Hyperlink Portal
 
-The profiling dashboard includes an interactive **Time-Locked Navigation Portal** designed to bridge your historical database analysis with your real-time time-series streams. This will only work if the vinntry daemon was active during your experiment(inference) otherwise the time-series data will be missing for that duration and the time-locked dashboard will fail to load.
+The profiling dashboard includes an interactive **Time-Locked Navigation Portal** designed to bridge historical database analysis with real-time time-series streams. This will only work if the vinntry daemon was active during experiment(inference) otherwise the time-series data will be missing for that duration and the time-locked dashboard will fail to load.
 
 When an experiment run identifier is selected via the `$run_id` dropdown, the underlying SQLite data handler executes a native cross-join block to isolate the run's exact epoch timestamps:
 
@@ -115,10 +115,10 @@ WHERE run_id = '\$run_id';
 
 ![Portal Navigation Flow](docs/images/op-life-cycle.png "Portal Navigation Flow")
 
-1. Select your target benchmarking sweep from the top control panel filter.
+1. Select target benchmarking sweep from the top control panel filter.
 2. The `Cross-Dashboard Telemetry Portal` panel re-compiles its underlying hyperlink data string.
 3. Click the blue link cell **`🛸 Launch Time-Locked View`**.
-4. Grafana opens a fresh browser tab directly into your high-frequency Prometheus live dashboard.
+4. Grafana opens a fresh browser tab directly into high-frequency Prometheus live dashboard.
 5. The destination page completely bypasses the standard default time window. Instead, **the time selector boundaries are programmatically forced onto the exact start and end milliseconds of that historical hardware stress test**, eliminating manual graph hunting.
 
 ---
@@ -151,7 +151,7 @@ docker compose up -d
 ```
 
 ### 3. Execution
-Execute the compiled native binary directly on your host engine. It automatically binds an HTTP collector endpoint to port `9101`, allowing the containerized Prometheus instance to query telemetry records directly via the `host-gateway` bridge.
+Execute the compiled native binary directly on host engine. It automatically binds an HTTP collector endpoint to port `9101`, allowing the containerized Prometheus instance to query telemetry records directly via the `host-gateway` bridge.
 
 ```bash
 ./build/vinntry_daemon
@@ -187,7 +187,7 @@ The tracking loop features a high-frequency **4Hz framework** across both the na
 
 #### Adjusting Prometheus Metrics Extraction Rates:
 1. Open `config/prometheus/prometheus.yml`.
-2. Modify both the `scrape_interval` and `evaluation_interval` targets to sync with your C++ timing offset:
+2. Modify both the `scrape_interval` and `evaluation_interval` targets to sync with C++ timing offset:
    ```yaml
    global:
      scrape_interval: 250ms
@@ -199,7 +199,7 @@ The tracking loop features a high-frequency **4Hz framework** across both the na
    ```
 
 ### 3. Adjusting Exposed Infrastructure Network Ports
-If ports **`9090`** (Prometheus Workbench) or **`3000`** (Grafana Interface) conflict with existing applications running natively on your host environment, modify the exposed routing rules within the composition file.
+If ports **`9090`** (Prometheus Workbench) or **`3000`** (Grafana Interface) conflict with existing applications running natively on host environment, modify the exposed routing rules within the composition file.
 
 1. Open `docker-compose.yml` and locate the specific service block mapping.
 2. Edit the **left-hand** variable inside the `ports` collection arrays to re-route incoming network transactions (format: `HOST:CONTAINER`):

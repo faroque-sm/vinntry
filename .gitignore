@@ -1,7 +1,6 @@
 # 1. Docker Runtime Storage
 prometheus_data/
 grafana_data/
-*.db
 *.sqlite
 *.wal
 
