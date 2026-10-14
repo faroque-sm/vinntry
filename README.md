@@ -220,6 +220,10 @@ If ports **`9090`** (Prometheus Workbench) or **`3000`** (Grafana Interface) con
 
 ---
 
+## ⚖️ License
+
+This project is licensed under the **GNU General Public License v3 (GPLv3)**. 
+
 ## 🔒 Storage and Access Controls
 
 * **Grafana Credentials:** Sign-in access is restricted via custom deployment options. Use Username: `admin`, Password: `vinntry_pass`.
