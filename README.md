@@ -220,11 +220,13 @@ If ports **`9090`** (Prometheus Workbench) or **`3000`** (Grafana Interface) con
 
 ---
 
-## ⚖️ License
-
-This project is licensed under the **GNU General Public License v3 (GPLv3)**. 
-
 ## 🔒 Storage and Access Controls
 
 * **Grafana Credentials:** Sign-in access is restricted via custom deployment options. Use Username: `admin`, Password: `vinntry_pass`.
 * **Dashboard Provisioning:** Dashboards and sources are hot-mounted directly into the target containers. The `vinntry-dash.json` file is enforced via `grafana.ini` as the persistent landing configuration root, meaning monitoring interfaces are instantly accessible without manual UI setup.
+
+---
+
+## ⚖️ License
+
+This project is licensed under the **GNU General Public License v3 (GPLv3)**. 
